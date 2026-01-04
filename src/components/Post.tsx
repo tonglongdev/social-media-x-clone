@@ -1,38 +1,9 @@
-import { imagekit } from "@/utils";
+import Link from "next/link";
 import Image from "./Image";
 import PostInfo from "./PostInfo";
 import PostInteractions from "./PostInteractions";
-import Video from "./Video";
-import Link from "next/link";
-
-interface FileDetailsResponse {
-  width: number;
-  height: number;
-  filePath: string;
-  url: string;
-  fileType: string;
-  customMetadata?: { sensitive: boolean };
-}
 
 const Post = async ({ type }: { type?: "status" | "comment" }) => {
- 
-  // FETCH POST MEDIA
-
-  // const getFileDetails = async (
-  //   fileId: string
-  // ): Promise<FileDetailsResponse> => {
-  //   return new Promise((resolve, reject) => {
-  //     imagekit.getFileDetails(fileId, function (error, result) {
-  //       if (error) reject(error);
-  //       else resolve(result as FileDetailsResponse);
-  //     });
-  //   });
-  // };
-
-  // const fileDetails = await getFileDetails("675d943be375273f6003858f");
-
-  // console.log(fileDetails);
-
   return (
     <div className="p-4 border-y-[1px] border-borderGray">
       {/* POST TYPE */}
@@ -106,21 +77,6 @@ const Post = async ({ type }: { type?: "status" | "comment" }) => {
             </p>
           </Link>
           <Image path="general/post.jpeg" alt="" w={600} h={600} />
-          {/* AFTER FETCHING THE POST MEDIA */}
-          {/* {fileDetails && fileDetails.fileType === "image" ? (
-            <Image
-              path={fileDetails.filePath}
-              alt=""
-              w={fileDetails.width}
-              h={fileDetails.height}
-              className={fileDetails.customMetadata?.sensitive ? "blur-lg" : ""}
-            />
-          ) : (
-            <Video
-              path={fileDetails.filePath}
-              className={fileDetails.customMetadata?.sensitive ? "blur-lg" : ""}
-            />
-          )} */}
           {type === "status" && (
             <span className="text-textGray">8:41 PM · Dec 5, 2024</span>
           )}
