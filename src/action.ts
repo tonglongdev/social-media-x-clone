@@ -1,11 +1,36 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { UploadResponse } from "imagekit/dist/libs/interfaces";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { prisma } from "./prisma";
 import { imagekit } from "./utils";
+
+// Ensure user exists in database
+const ensureUserExists = async (userId: string) => {
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!existingUser) {
+      const clerkUser = await currentUser();
+      if (clerkUser && clerkUser.username) {
+        await prisma.user.create({
+          data: {
+            id: userId,
+            username: clerkUser.username,
+            email: clerkUser.emailAddresses[0]?.emailAddress || "",
+            img: clerkUser.imageUrl || "",
+          },
+        });
+      }
+    }
+  } catch (err) {
+    console.log("Error ensuring user exists:", err);
+  }
+};
 
 export const followUser = async (targetUserId: string) => {
   const { userId } = await auth();
@@ -105,6 +130,9 @@ export const addComment = async (
 
   if (!userId) return { success: false, error: true };
 
+  // Ensure user exists in database before creating comment
+  await ensureUserExists(userId);
+
   const postId = formData.get("postId");
   const username = formData.get("username");
   const desc = formData.get("desc");
@@ -146,6 +174,9 @@ export const addPost = async (
   const { userId } = await auth();
 
   if (!userId) return { success: false, error: true };
+
+  // Ensure user exists in database before creating post
+  await ensureUserExists(userId);
 
   const desc = formData.get("desc");
   const file = formData.get("file") as File;
