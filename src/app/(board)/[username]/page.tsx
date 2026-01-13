@@ -72,9 +72,9 @@ const UserPage = async ({
           </div>
           {userId && (
             <FollowButton
-              userId={user.id}
-              isFollowed={!!user.followings.length}
-              username={username}
+            userId={user.id}
+            isFollowed={!!user.followings.length}
+            username={username}
             />
           )}
         </div>
