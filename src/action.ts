@@ -1,10 +1,10 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
-import { prisma } from "./prisma";
-import { z } from "zod";
-import { revalidatePath } from "next/cache";
 import { UploadResponse } from "imagekit/dist/libs/interfaces";
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
+import { prisma } from "./prisma";
 import { imagekit } from "./utils";
 
 export const followUser = async (targetUserId: string) => {
